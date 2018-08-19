@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="utf-8" lang="en">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+      <!-- Tell the browser to be responsive to screen width -->
+      <meta content="width=device-width, initial-scale=1, maximum-scale=5" name="viewport">
+
+      <title>Vio Logs</title>
+      <meta name="description" content="">
+      <meta name="keywords" content="">
+
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+      <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"> 
+      <link rel="stylesheet" href="/css/reset.css">
+      <link rel="stylesheet" href="/css/style.css">
+      <link rel="stylesheet" href="/libs/simple-scrollbar.css">
+      <script type="text/javascript" src="/libs/jquery-3.3.1.min.js"></script>
+      <script type="text/javascript" src="/libs/simple-scrollbar.min.js"></script>
+      <script type="text/javascript" src="/libs/jquery.datetimepicker.full.min.js"></script>
+      <link rel="stylesheet" href="/libs/jquery.datetimepicker.min.css">
+
+  </head>
+  	<body>
+  		<div class="container">
+      <div class="main">
+            <div class="messages">
+                <div class="header">
+                    <a href="../" class="type"><%= type %></a>
+                    <div class="string">Von</div>
+                    <input placeholder="Startdatum ..." class="date" id="from_date" autocomplete="off"></input>
+                    <div class="string bis">bis</div>
+                    <input placeholder="Enddatum ..." class="date t" id="to_date" autocomplete="off"></input>
+
+                    <input placeholder="Inhalt ..." class="log_text_search" id="log_text_search" autocomplete="off"></input>
+                    <div class="filter_string" id="filter">Suchen</div>
+                </div>
+                <div class="logs" id="log_entrys" ss-container>
+                	<% logs.forEach(function(e) { %>
+		                  <div class="message">
+		                    <div class="timestamp" date="<%= e.timestamp %>">
+		                     	<%= new Date(e.timestamp).toLocaleDateString() %> <%= new Date(e.timestamp).toLocaleTimeString() %>
+		                    </div>
+		                    <div class="content">
+		                     	 <%= e.string %>
+		                    </div>
+		                  </div>
+               		<% }) %>
+                </div>
+
+            </div>
+        </div>
+  </div> <!-- end container -->
+    <script type="text/javascript" src="/js/main.js"></script>
+  </body>
+</html>

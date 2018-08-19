@@ -1,0 +1,19 @@
+{
+  "scripts": {
+    "start": "node server.js"
+  },
+  "name": "",
+  "version": "",
+  "dependencies": {
+    "async": "^2.6.1",
+    "compression": "^1.7.3",
+    "crypto": "^1.0.1",
+    "ejs": "^2.6.1",
+    "express": "^4.16.3",
+    "express-session": "^1.15.6",
+    "helmet": "^3.13.0",
+    "mysql": "^2.16.0",
+    "promise": "^8.0.1",
+    "request": "^2.88.0"
+  }
+}
