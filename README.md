@@ -1,7 +1,7 @@
 
-#Vio Logs
+ # Vio Logs
 
 Lokaler Dienst läuft auf Port 7463
 
-###Config
+## Config
 	Datenbank Zugang in Datei /libs/mysql.js ändern
