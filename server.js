@@ -8,6 +8,7 @@ var express = require('express');
 var helmet = require('helmet');
 var session = require('express-session');
 var async = require('async');
+var rateLimit = require("express-rate-limit");
 /*************************************** 
                 Setup
 ***************************************/
@@ -18,15 +19,12 @@ var server = app.listen(7463);
 // Compression, and helmet module for hsts etc
 app.use(helmet());
 app.use(compression());
+
+var signInLimiter = rateLimit({
+  windowMs: 5 * 60 * 1000, // 15 minutes
+  max: 10
+});
 // static properties
-function unpack(str) {
-    var bytes = [];
-    for (var i = 0; i < str.length; i++) {
-        var char = str.charCodeAt(i);
-        bytes.push(char & 0xFF);
-    }
-    return bytes.join('');
-}
 
 function createHash(pw, salt) {
     return crypto.createHash('sha512').update(pw + salt).digest('base64');
@@ -68,7 +66,7 @@ app.get('/logout', function(req, res) {
     req.session.destroy();
     res.redirect('/');
 })
-app.get('/login', function(req, res) {
+app.get('/login', signInLimiter,function(req, res) {
     let username = req.query.username;
     let password = req.query.password;
     mysql.query('SELECT * FROM accounts WHERE Name = ?;', [username]).then(function(data) {
