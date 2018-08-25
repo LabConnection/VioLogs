@@ -79,8 +79,6 @@ app.get('/login', function(req, res) {
             let salt = data.results[0].Salt;
             let hPassword = data.results[0].Password;
             let LogLevel = data.results[0].LogLevel;
-            console.log("pepper", pepper);
-            console.log("salt", salt);
             var hash = createHash(createHash(password, salt), pepper);
             if (hPassword == hash) {
                 console.log("auth succesful")
@@ -171,8 +169,6 @@ app.get('/logs/:log', function(req, res) {
     }
 });
 app.get('*', function(req, res) {
-    console.log(req.session);
-    console.log(req.params);
     res.redirect('/');
 });
 app.post('*', function(req, res) {
