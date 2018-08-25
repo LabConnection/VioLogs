@@ -145,7 +145,6 @@ app.get('/logs/:log', function(req, res) {
         mysql.query('SELECT Level FROM system_logs_access WHERE Logger = ?;', [log]).then(function(data_access) {
             if (data_access.results.length > 0) {
                 let needed_level = data_access.results[0].Level;
-                console.log("needed_level", needed_level)
                 if (log_level_access >= needed_level) {
                     mysql.query('SELECT * FROM system_logs WHERE Logger = ? ORDER BY Timestamp DESC;', [log]).then(function(data) {
                         let logs = [];
