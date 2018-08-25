@@ -22,7 +22,7 @@ app.use(compression());
 
 var signInLimiter = rateLimit({
   windowMs: 5 * 60 * 1000, // 5 minutes
-  max: 10
+  max: 3
 });
 // static properties
 
