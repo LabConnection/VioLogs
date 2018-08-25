@@ -19,6 +19,14 @@ var server = app.listen(7463);
 app.use(helmet());
 app.use(compression());
 // static properties
+function unpack(str) {
+    var bytes = [];
+    for (var i = 0; i < str.length; i++) {
+        var char = str.charCodeAt(i);
+        bytes.push(char & 0xFF);
+    }
+    return bytes.join('');
+}
 
 function createHash(pw, salt) {
     return crypto.createHash('sha512').update(pw + salt).digest('base64');
@@ -80,6 +88,7 @@ app.get('/login', function(req, res) {
                     console.log("has log access")
                     req.session.user = {};
                     req.session.user.logs = true;
+                    req.session.user.log_level = LogLevel;
                     req.session.user.name = username;
                     req.session.save()
                     res.redirect('/');
@@ -95,18 +104,32 @@ app.get('/login', function(req, res) {
         }
     });
 });
+
 // route delivering
 app.get('/', function(req, res) {
     if ((req.session.user) && (req.session.user.logs == true)) {
+    	let log_level_access = req.session.user.log_level
         mysql.query('SELECT DISTINCT Logger FROM system_logs ORDER BY Logger;').then(function(data) {
             let logger = [];
             if (data.results.length > 0) {
                 logger = data.results.map(function(e) {
                     return e.Logger;
                 })
-                res.render('index', {
-                    viewableLogs: logger
-                });
+                mysql.query('SELECT * FROM system_logs_access ORDER BY Logger;').then(function(data_access) {
+                	if (data_access.results.length > 0) {
+                		let log_access = data_access.results.map(function(e) {
+                			return {Logger:e.Logger,Level:e.Level}
+                		}).filter(function(e) {
+                            return log_level_access >= e.Level;
+                        })
+                		logger = logger.filter(function(Logger) {
+                			return log_access.findIndex(w => w.Logger == Logger) > -1;
+                		})
+		                res.render('index', {
+		                    viewableLogs: logger
+		                });
+		            }
+            	})
             }
         });
     } else {
