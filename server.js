@@ -9,7 +9,7 @@ var helmet = require('helmet');
 var session = require('express-session');
 var async = require('async');
 /*************************************** 
-				Setup
+                Setup
 ***************************************/
 var mysql = require('./libs/mysql');
 // Express & Socket.io
@@ -104,11 +104,10 @@ app.get('/login', function(req, res) {
         }
     });
 });
-
 // route delivering
 app.get('/', function(req, res) {
     if ((req.session.user) && (req.session.user.logs == true)) {
-    	let log_level_access = req.session.user.log_level
+        let log_level_access = req.session.user.log_level
         mysql.query('SELECT DISTINCT Logger FROM system_logs ORDER BY Logger;').then(function(data) {
             let logger = [];
             if (data.results.length > 0) {
@@ -116,20 +115,23 @@ app.get('/', function(req, res) {
                     return e.Logger;
                 })
                 mysql.query('SELECT * FROM system_logs_access ORDER BY Logger;').then(function(data_access) {
-                	if (data_access.results.length > 0) {
-                		let log_access = data_access.results.map(function(e) {
-                			return {Logger:e.Logger,Level:e.Level}
-                		}).filter(function(e) {
+                    if (data_access.results.length > 0) {
+                        let log_access = data_access.results.map(function(e) {
+                            return {
+                                Logger: e.Logger,
+                                Level: e.Level
+                            }
+                        }).filter(function(e) {
                             return log_level_access >= e.Level;
                         })
-                		logger = logger.filter(function(Logger) {
-                			return log_access.findIndex(w => w.Logger == Logger) > -1;
-                		})
-		                res.render('index', {
-		                    viewableLogs: logger
-		                });
-		            }
-            	})
+                        logger = logger.filter(function(Logger) {
+                            return log_access.findIndex(w => w.Logger == Logger) > -1;
+                        })
+                        res.render('index', {
+                            viewableLogs: logger
+                        });
+                    }
+                })
             }
         });
     } else {
@@ -138,20 +140,31 @@ app.get('/', function(req, res) {
 });
 app.get('/logs/:log', function(req, res) {
     if ((req.session.user) && (req.session.user.logs == true)) {
+        let log_level_access = req.session.user.log_level
         let log = req.params.log;
-        mysql.query('SELECT * FROM system_logs WHERE Logger = ? ORDER BY Timestamp DESC;', [log]).then(function(data) {
-            let logs = [];
-            if (data.results.length > 0) {
-                logs = data.results.map(function(e) {
-                    return {
-                        string: e.Log,
-                        timestamp: e.Timestamp
-                    }
-                })
-                res.render('logs', {
-                    type: log,
-                    logs: logs
-                });
+        mysql.query('SELECT Level FROM system_logs_access WHERE Logger = ?;', [log]).then(function(data_access) {
+            if (data_access.results.length > 0) {
+                let needed_level = data_access.results[0].Level;
+                console.log("needed_level", needed_level)
+                if (log_level_access >= needed_level) {
+                    mysql.query('SELECT * FROM system_logs WHERE Logger = ? ORDER BY Timestamp DESC;', [log]).then(function(data) {
+                        let logs = [];
+                        if (data.results.length > 0) {
+                            logs = data.results.map(function(e) {
+                                return {
+                                    string: e.Log,
+                                    timestamp: e.Timestamp
+                                }
+                            })
+                            res.render('logs', {
+                                type: log,
+                                logs: logs
+                            });
+                        }
+                    });
+                } else {
+                    res.redirect('/');
+                }
             }
         });
     } else {
