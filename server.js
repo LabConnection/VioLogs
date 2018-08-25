@@ -21,7 +21,7 @@ app.use(helmet());
 app.use(compression());
 
 var signInLimiter = rateLimit({
-  windowMs: 5 * 60 * 1000, // 15 minutes
+  windowMs: 5 * 60 * 1000, // 5 minutes
   max: 10
 });
 // static properties
