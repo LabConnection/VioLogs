@@ -19,13 +19,11 @@ var server = app.listen(7463);
 // Compression, and helmet module for hsts etc
 app.use(helmet());
 app.use(compression());
-
 var signInLimiter = rateLimit({
-  windowMs: 5 * 60 * 1000, // 5 minutes
-  max: 3
+    windowMs: 5 * 60 * 1000, // 5 minutes
+    max: 3
 });
 // static properties
-
 function createHash(pw, salt) {
     return crypto.createHash('sha512').update(pw + salt).digest('base64');
 }
@@ -66,7 +64,7 @@ app.get('/logout', function(req, res) {
     req.session.destroy();
     res.redirect('/');
 })
-app.get('/login', signInLimiter,function(req, res) {
+app.get('/login', signInLimiter, function(req, res) {
     let username = req.query.username;
     let password = req.query.password;
     mysql.query('SELECT * FROM accounts WHERE Name = ?;', [username]).then(function(data) {
@@ -134,7 +132,7 @@ app.get('/', function(req, res) {
         res.render('login');
     }
 });
-app.get('/logs/:log', function(req, res) {
+app.get('/logs_data/:log', function(req, res) {
     if ((req.session.user) && (req.session.user.logs == true)) {
         let log_level_access = req.session.user.log_level
         let log = req.params.log;
@@ -151,11 +149,32 @@ app.get('/logs/:log', function(req, res) {
                                     timestamp: e.Timestamp
                                 }
                             })
-                            res.render('logs', {
+                            res.json({
                                 type: log,
                                 logs: logs
                             });
                         }
+                    });
+                } else {
+                    res.redirect('/');
+                }
+            }
+        });
+    } else {
+        res.redirect('/');
+    }
+});
+app.get('/logs/:log', function(req, res) {
+    if ((req.session.user) && (req.session.user.logs == true)) {
+        let log_level_access = req.session.user.log_level
+        let log = req.params.log;
+        mysql.query('SELECT Level FROM system_logs_access WHERE Logger = ?;', [log]).then(function(data_access) {
+            if (data_access.results.length > 0) {
+                let needed_level = data_access.results[0].Level;
+                if (log_level_access >= needed_level) {
+                    res.render('logs', {
+                        type: log,
+                        logs: []
                     });
                 } else {
                     res.redirect('/');

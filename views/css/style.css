@@ -192,13 +192,14 @@ body {
     height: calc(100% - 75px);
     float: left;
     padding-bottom: 15px;
+    overflow: auto;
 }
-.messages>.logs>.ss-wrapper>.ss-content>.message {
+.messages>.logs>.message {
     position: relative;
     width: 100%;
     margin-top: 25px;
 }
-.messages>.logs>.ss-wrapper>.ss-content>.message>.timestamp {
+.messages>.logs>.message>.timestamp {
     position: absolute;
     top: -15px;
     left: 5%;
@@ -206,7 +207,7 @@ body {
     font-size: 11px;
     color: #000;
 }
-.messages>.logs>.ss-wrapper>.ss-content>.message>.content {
+.messages>.logs>.message>.content {
     clear: both;
     background-color: #FFF;
     padding-left: 10px;
@@ -224,10 +225,10 @@ body {
     word-wrap: break-word;
     word-break: break-all;
 }
-.messages>.logs>.ss-wrapper>.ss-content>.message:first-child>.content {
+.messages>.logs>.message:first-child>.content {
     margin-top: 15px;
 }
-.messages>.logs>.ss-wrapper>.ss-content>.message:last-child>.content {
+.messages>.logs>.message:last-child>.content {
     margin-bottom: 15px;
 }
 /* Media Rules */

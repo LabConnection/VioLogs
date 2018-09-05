@@ -27,7 +27,7 @@
       <div class="main">
             <div class="messages">
                 <div class="header">
-                    <a href="../" class="type"><%= type %></a>
+                    <a href="../" class="type" id="logger_type" ><%= type %></a>
                     <div class="string">Von</div>
                     <input placeholder="Startdatum ..." class="date" id="from_date" autocomplete="off"></input>
                     <div class="string bis">bis</div>
@@ -36,22 +36,13 @@
                     <input placeholder="Inhalt ..." class="log_text_search" id="log_text_search" autocomplete="off"></input>
                     <div class="filter_string" id="filter">Suchen</div>
                 </div>
-                <div class="logs" id="log_entrys" ss-container>
-                	<% logs.forEach(function(e) { %>
-		                  <div class="message">
-		                    <div class="timestamp" date="<%= e.timestamp %>">
-		                     	<%= new Date(e.timestamp).toLocaleDateString() %> <%= new Date(e.timestamp).toLocaleTimeString() %>
-		                    </div>
-		                    <div class="content">
-		                     	 <%= e.string %>
-		                    </div>
-		                  </div>
-               		<% }) %>
+                <div class="logs" id="log_entrys">
+                	
                 </div>
 
             </div>
         </div>
   </div> <!-- end container -->
-    <script type="text/javascript" src="/js/main.js"></script>
+    <script type="text/javascript" src="/js/main.js?v<%= Math.random() * 100 %>"></script>
   </body>
 </html>
