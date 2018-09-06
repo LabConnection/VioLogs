@@ -54,7 +54,6 @@ class Logs {
                 let msg = e.string.trim();
                 let timestamp = new Date(e.timestamp);
                 if ((self._filter.from_date != null) && (self._filter.to_date != null)) {
-                    console.log("timestamp stuf")
                     if (self._filter.from_date.getTime() < self._filter.to_date.getTime()) {
                         if ((self._filter.from_date.getTime() >= timestamp.getTime()) || (self._filter.to_date.getTime() <= timestamp.getTime())) {
                             view = 0;
@@ -78,6 +77,7 @@ class Logs {
     filter() {
         console.log("filter");
         var self = this;
+        self._currentLimit = 50;
         let string = $("#log_text_search").val();
         let from_date = new Date($('#from_date').val());
         let to_date = new Date($('#to_date').val());
